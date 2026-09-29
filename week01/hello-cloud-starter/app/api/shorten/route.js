@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
-import { saveUrl } from "../../../lib/db";
+import { getUrlByOriginalUrl, getUrlByShortCode, saveUrl } from "../../../lib/db";
 import { validateUrl } from "../../../lib/validation";
 
 export const runtime = "nodejs";
@@ -38,7 +38,7 @@ function createShortCode(originalUrl, length = 6) {
  */
 export async function POST(request) {
   try {
-
+    const baseUrl = new URL(request.url).origin;
     /*
      * originalUrl 값 가져오기
      */
@@ -62,13 +62,31 @@ export async function POST(request) {
     }
 
     /*
-     *  Short URL 생성
+     * originalUrl 중복으로 있는지 확인
+     * 있으면 db 저장된 shortUrl return 
      */
-    const shortCode = createShortCode(originalUrl);
+    const existingUrl = await getUrlByOriginalUrl(originalUrl);
+
+    if (existingUrl) {
+      return NextResponse.json(
+        {
+          shortCode: existingUrl.short_code,
+          shortUrl: `${baseUrl}/${existingUrl.short_code}`,
+          originalUrl: originalUrl,
+        },
+        { status: 200 }
+      );
+    }
+
+    /*
+     *  Short URL 생성 및 중복 확인
+     */
+    let shortCode;
+    do {
+      shortCode = createShortCode(originalUrl);
+    } while (await getUrlByShortCode(shortCode));
 
     await saveUrl(shortCode, originalUrl);
-
-    const baseUrl = new URL(request.url).origin;
 
     /*
      * URL 생성 성공
