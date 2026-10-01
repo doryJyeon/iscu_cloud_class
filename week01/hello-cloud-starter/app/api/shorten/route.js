@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
-import { getUrlByOriginalUrl, getUrlByShortCode, saveUrl } from "../../../lib/db";
+import { findUrlByOriginalUrl, findUrlByShortCode, saveUrl } from "../../../lib/db";
 import { validateUrl } from "../../../lib/validation";
 
 export const runtime = "nodejs";
@@ -65,7 +65,7 @@ export async function POST(request) {
      * originalUrl 중복으로 있는지 확인
      * 있으면 db 저장된 shortUrl return 
      */
-    const existingUrl = await getUrlByOriginalUrl(originalUrl);
+    const existingUrl = await findUrlByOriginalUrl(originalUrl);
 
     if (existingUrl) {
       return NextResponse.json(
@@ -84,7 +84,7 @@ export async function POST(request) {
     let shortCode;
     do {
       shortCode = createShortCode(originalUrl);
-    } while (await getUrlByShortCode(shortCode));
+    } while (await findUrlByShortCode(shortCode));
 
     await saveUrl(shortCode, originalUrl);
 
