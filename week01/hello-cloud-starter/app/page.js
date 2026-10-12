@@ -18,21 +18,21 @@ function isValidUrl(value) {
 function validateUrl(value) {
   const trimmedUrl = value.trim();
 
-  // TODO 1: 빈 값 검증
+  // 빈 값 검증
   if (trimmedUrl === "") {
     return "URL을 입력해주세요.";
   }
 
-  // TODO 2: 최대 길이 검증
+  // 최대 길이 검증
   if (trimmedUrl.length > MAX_URL_LENGTH) {
     return `URL은 최대 ${MAX_URL_LENGTH}자까지 입력 가능합니다.`;
   }
 
-  // TODO 3: http:// 또는 https:// 시작 여부 검증
+  // http:// 또는 https:// 시작 여부 검증
   if (trimmedUrl.startsWith("http://") === false && trimmedUrl.startsWith("https://") === false) {
     return "URL은 http:// 또는 https://로 시작해야 합니다.";
   }
-  // TODO 4: 올바른 URL 형식 검증
+  // 올바른 URL 형식 검증
   if (!isValidUrl(value)) {
     return "올바른 URL 형식이 아닙니다.";
   }
