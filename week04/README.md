@@ -131,7 +131,7 @@ import { saveUrl } from "../../../lib/db";
 `shortCode`를 생성한 다음 DB에 저장합니다.
 
 ```js
-const shortCode = createShortCode();
+const shortCode = createShortCode(originalUrl);
 
 await saveUrl(shortCode, originalUrl);
 ```
