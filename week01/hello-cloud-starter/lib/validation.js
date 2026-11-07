@@ -29,6 +29,14 @@ export function validateUrl(originalUrl) {
 		};
 	}
 
+	// 자기 서비스 요청하는지 확인
+	if (parsedUrl.hostname === new URL(process.env.VERCEL_URL).hostname) {
+		return {
+			code: "SELF_URL",
+			message: "Cannot shorten your own service URL.",
+		};
+	}
+
 	// 프로토콜 검사 http | https
 	if (!["http:", "https:"].includes(parsedUrl.protocol)) {
 		return {
