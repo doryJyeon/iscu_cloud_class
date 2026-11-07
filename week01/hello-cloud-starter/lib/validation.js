@@ -30,7 +30,7 @@ export function validateUrl(originalUrl) {
 	}
 
 	// 자기 서비스 요청하는지 확인
-	if (parsedUrl.hostname === new URL(process.env.VERCEL_URL).hostname) {
+	if (parsedUrl.hostname === new URL(process.env.SERVER_URL).hostname) {
 		return {
 			code: "SELF_URL",
 			message: "Cannot shorten your own service URL.",
